@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./index.css">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="box">
+        <div class="number"id="span1">0</div>
+
+        <div class="contrast">
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+
+
+            <div class="circle"></div>
+            <div class="bubble-home"></div>
+        </div>
+    </div>
+
+        <script>
+       	        var num = 0;
+	        var t = setInterval(function(){
+		       num++;
+		       var span1 = document.getElementById("span1");
+		       span1.innerText = num+'%';
+			        if(num==100){
+			        	clearInterval(t);
+			        }       
+	        },100);
+     </script>
+</body>
+</html>
