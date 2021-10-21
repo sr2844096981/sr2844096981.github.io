@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Background</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            float: left;
+            margin: 0 80px 0 50px;
+            writing-mode: tb-rl;
+            height: 100%;
+            text-align: center;
+        }
+        
+        .bg-box {
+            float: left;
+            width: 700px;
+        }
+        
+        .bg-item {
+            float: left;
+            width: 200px;
+            padding: 50px;
+        }
+        
+        .gd-text {
+            width: 200px;
+        }
+        
+        nav {
+            position: fixed;
+            z-index: 9999;
+            top: 50px;
+            right: 60px;
+            padding: 10px;
+            background: rgba(0, 0, 0, .5);
+            border-radius: 5px
+        }
+        
+        .button {
+            padding: 5px 15px;
+            transition: opacity .3s ease;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, .3);
+            font-size: 12px;
+            filter: grayscale(100%);
+        }
+        
+        .button:hover {
+            opacity: .5;
+        }
+        
+        .back {
+            width: 30px;
+            height: 30px;
+            background: url(./images/GitHub-Mark.png) no-repeat;
+            background-size: 24px;
+            margin: 1px 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="https://github.com/sr2844096981/Picture-main-color.git" class="button back"></a>
+        <a href="./upload.html" class="button prev">◀</a>
+        <a href="./gradient.html" class="button next">▶</a>
+    </nav>
+    <main>
+        <h1>Background</h1>
+        <div class="bg-box">
+            <div class="bg-item">
+                <img src="https://picsum.photos/200?random=1" crossOrigin="anonymous">
+                <div class="bg-text">The Lorem Ipsum for photos.</div>
+            </div>
+            <div class="bg-item">
+                <img src="https://picsum.photos/200?random=2" crossOrigin="anonymous">
+                <div class="bg-text">The Lorem Ipsum for photos.</div>
+            </div>
+            <div class="bg-item">
+                <img src="https://picsum.photos/200?random=3" crossOrigin="anonymous">
+                <div class="bg-text">The Lorem Ipsum for photos.</div>
+            </div>
+            <div class="bg-item">
+                <img src="https://picsum.photos/200?random=4" crossOrigin="anonymous">
+                <div class="bg-text">The Lorem Ipsum for photos.</div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            let imgAll = document.querySelectorAll('img');
+            let bItem = document.querySelectorAll('.bg-item');
+            let itemText = document.querySelectorAll('.bg-text');
+            for (let i = 0; i < imgAll.length; i++) {
+                imgAll[i].onload = function() {
+                    const {
+                        RGB,
+                        HEX,
+                        GRAY
+                    } = avgColor(this)
+                    bItem[i].style.backgroundColor = RGB;
+                    itemText[i].style.color = GRAY > 192 ? '#000' : '#fff';
+                }
+            }
+
+            function avgColor(imgEl) {
+                let canvas = document.createElement('canvas');
+                canvas.height = imgEl.naturalHeight;
+                canvas.width = imgEl.naturalWidth;
+                let context = canvas.getContext && canvas.getContext('2d');
+                context.drawImage(imgEl, 0, 0);
+                const data = context.getImageData(0, 0, imgEl.naturalWidth, imgEl.naturalHeight).data;
+                let i = 0;
+                let count = 0;
+                let rgb = {
+                    r: 0,
+                    g: 0,
+                    b: 0
+                };
+                while (i < data.length) {
+                    rgb.r += data[i];
+                    rgb.g += data[i + 1];
+                    rgb.b += data[i + 2];
+                    count++;
+                    i += 4;
+                }
+                rgb.r = Math.round(rgb.r / count);
+                rgb.g = Math.round(rgb.g / count);
+                rgb.b = Math.round(rgb.b / count);
+
+                const {
+                    r,
+                    g,
+                    b
+                } = rgb;
+                let RGB = `rgb(${r},${g},${b})`;
+                let HEX = `#${r.toString(16)+g.toString(16)+b.toString(16)}`;
+                let GRAY = Math.floor(r * 0.299 + g * 0.587 + b * 0.114);
+                return {
+                    RGB,
+                    HEX,
+                    GRAY
+                };
+            }
+        </script>
+    </main>
+</body>
+
+</html>

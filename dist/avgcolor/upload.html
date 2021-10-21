@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>demo-concise</title>
+    <style type="text/css">
+        main {
+            width: 700px;
+            margin: 0 auto;
+        }
+        
+        h2 {
+            margin-top: 30px;
+        }
+        
+        p {
+            width: 700px;
+            height: 50px;
+            line-height: 50px;
+            padding: 0 30px;
+            background-color: #fff;
+        }
+        
+        img {
+            display: block;
+            margin: 40px auto;
+            cursor: pointer;
+        }
+        
+        input {
+            display: none;
+        }
+        
+        nav {
+            position: fixed;
+            z-index: 9999;
+            top: 50px;
+            right: 60px;
+            padding: 10px;
+            background: rgba(0, 0, 0, .5);
+            border-radius: 5px
+        }
+        
+        .button {
+            padding: 5px 15px;
+            transition: opacity .3s ease;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, .3);
+            font-size: 12px;
+            filter: grayscale(100%);
+        }
+        
+        .button:hover {
+            opacity: .5;
+        }
+        
+        .back {
+            width: 30px;
+            height: 30px;
+            background: url(./images/GitHub-Mark.png) no-repeat;
+            background-size: 24px;
+            margin: 1px 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="https://github.com/sr2844096981/Picture-main-color.git" class="button back"></a>
+        <a href="./video.html" class="button prev">◀</a>
+        <a href="./background.html" class="button next">▶</a>
+    </nav>
+    <main>
+        <h2>Click the figure below to select a image to define the average color 👇</h2>
+        <p></p>
+        <img src="https://picsum.photos/200" width="400" alt="点我上传图片提取主色调" title="点我上传图片提取主色调" crossorigin="anonymous" onclick="openFileDialog()">
+        <input type="file">
+    </main>
+    <script type="text/javascript">
+        console.time()
+
+        function openFileDialog() {
+            document.querySelector("input[type=file]").click();
+        }
+
+        document.querySelector("input[type=file]").addEventListener("change", function() {
+            let file = document.querySelector('input[type=file]').files[0];
+            let reader = new FileReader();
+            reader.addEventListener("load", function() {
+                document.querySelector('img').src = reader.result;
+            }, false);
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        })
+
+        let img = document.querySelector('img');
+        img.onload = function() {
+            const {
+                r,
+                g,
+                b
+            } = colorfulImg(img)
+            console.log(r, g, b);
+            // 彩色转灰度，著名的心理学公式 Gray = R*0.299 + G*0.587 + B*0.114
+            let grayLevel = r * 0.299 + g * 0.587 + b * 0.114;
+            if (grayLevel >= 192) {
+                document.querySelector("h2").style.color = '#000';
+            } else {　　
+                document.querySelector("h2").style.color = '#fff';
+            }
+            document.body.style.backgroundColor = `rgb(${r},${g},${b})`;
+            document.querySelector("p").innerHTML = `RGB:&nbsp;rgb(${r},${g},${b})&nbsp;&nbsp;&nbsp;&nbsp;HEX:&nbsp;#${r.toString(16)+g.toString(16)+b.toString(16)}`
+        };
+
+        // 提取主色
+        function colorfulImg(imgEl) {
+            let canvas = document.createElement('canvas');
+            canvas.height = imgEl.naturalHeight;
+            canvas.width = imgEl.naturalWidth;
+            let context = canvas.getContext && canvas.getContext('2d');
+            context.drawImage(imgEl, 0, 0);
+            const data = context.getImageData(0, 0, imgEl.naturalWidth, imgEl.naturalHeight).data;
+
+            let i = 0;
+            let count = 0;
+            let rgb = {
+                r: 0,
+                g: 0,
+                b: 0
+            };
+            while (i < data.length) {
+                rgb.r += data[i];
+                rgb.g += data[i + 1];
+                rgb.b += data[i + 2];
+                count++;
+                i += 4;
+            }
+            rgb.r = Math.round(rgb.r / count);
+            rgb.g = Math.round(rgb.g / count);
+            rgb.b = Math.round(rgb.b / count);
+
+            return rgb;
+        }
+        console.timeEnd();
+    </script>
+</body>
+
+</html>

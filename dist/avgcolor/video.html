@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000;
+        }
+        
+        .video-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        video {
+            border: 8px solid #000;
+            outline: 1px solid rgba(255, 255, 255, .1);
+            background: #000;
+        }
+        
+        nav {
+            position: fixed;
+            z-index: 9999;
+            top: 50px;
+            right: 60px;
+            padding: 10px;
+            background: rgba(0, 0, 0, .5);
+            border-radius: 5px
+        }
+        
+        .button {
+            padding: 5px 15px;
+            transition: opacity .3s ease;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, .3);
+            font-size: 12px;
+            filter: grayscale(100%);
+        }
+        
+        .button:hover {
+            opacity: .5;
+        }
+        
+        .back {
+            width: 30px;
+            height: 30px;
+            background: url(./images/GitHub-Mark.png) no-repeat;
+            background-size: 24px;
+            margin: 1px 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="https://github.com/sr2844096981/Picture-main-color.git" class="button back"></a>
+        <a href="./box-shadow.html" class="button prev">◀</a>
+        <a href="./upload.html" class="button next">▶</a>
+    </nav>
+    <main class="video-box">
+        <!-- 560 * 315 -->
+        <video src="./images/video.mp4" autoplay controls width="560" height="315"></video>
+    </main>
+
+
+    <script>
+        let video = document.querySelector('video');
+        let videoBox = document.querySelector('.video-box');
+
+        video.addEventListener("play", function() {
+            timerCallback()
+        })
+
+        function timerCallback() {
+            if (video.paused || video.ended) {
+                return
+            };
+            changeBoxShadow();
+            setTimeout(() => {
+                timerCallback();
+            }, 100);
+        }
+
+        function changeBoxShadow() {
+            let divAll = document.querySelectorAll('div');
+            for (let i = 0; i < divAll.length; i++) {
+                const y = parseInt(divAll[i].style.top) * video.videoWidth / video.width;
+                const x = parseInt(divAll[i].style.left) * video.videoHeight / video.height;
+                const width = video.videoWidth / 16;
+                const height = video.videoHeight / 9;
+                divAll[i].style.boxShadow = `0px 0px 160px 10px ${canvasData(x, y, width, height)}`;
+            }
+        }
+
+        function createDiv() {
+            let div = document.createElement('div');
+            div.style.width = video.width / 3 + 'px';
+            div.style.height = video.height / 3 + 'px';
+            div.style.position = 'absolute';
+            div.style.zIndex = '-1';
+            return div;
+        }
+        video.oncanplay = function() {
+            let divtl = createDiv()
+            divtl.style.top = 0;
+            divtl.style.left = 0;
+            videoBox.appendChild(divtl);
+            let divtr = createDiv()
+            divtr.style.top = 0;
+            divtr.style.left = video.width / 3 * 2 + 'px';
+            videoBox.appendChild(divtr);
+            let divbl = createDiv()
+            divbl.style.top = video.height / 3 * 2 + 'px';
+            divbl.style.left = 0;
+            videoBox.appendChild(divbl);
+            let divbr = createDiv()
+            divbr.style.top = video.height / 3 * 2 + 'px';
+            divbr.style.left = video.width / 3 * 2 + 'px';
+            videoBox.appendChild(divbr);
+            let divbc = createDiv()
+            divbc.style.top = video.height / 3 * 2 + 'px';
+            divbc.style.left = video.width / 3 + 'px';
+            videoBox.appendChild(divbc);
+        }
+
+        function canvasData(x, y, width, height) {
+            let canvas = document.createElement('canvas');
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
+            let context = canvas.getContext && canvas.getContext('2d');
+            context.drawImage(video, 0, 0);
+            const data = context.getImageData(x, y, width, height).data;
+            return computeAvg(data).RGB;
+        }
+
+        function computeAvg(data) {
+            let i = 0;
+            let count = 0;
+            let rgb = {
+                r: 0,
+                g: 0,
+                b: 0
+            };
+            while (i < data.length) {
+                rgb.r += data[i];
+                rgb.g += data[i + 1];
+                rgb.b += data[i + 2];
+                count++;
+                i += 4;
+            }
+            rgb.r = Math.round(rgb.r / count);
+            rgb.g = Math.round(rgb.g / count);
+            rgb.b = Math.round(rgb.b / count);
+            const {
+                r,
+                g,
+                b
+            } = rgb;
+            let RGB = `rgb(${r},${g},${b})`;
+            let HEX = `#${r.toString(16)+g.toString(16)+b.toString(16)}`;
+            let GRAY = Math.floor(r * 0.299 + g * 0.587 + b * 0.114);
+            return {
+                RGB,
+                HEX,
+                GRAY
+            };
+        }
+    </script>
+</body>
+
+</html>
