@@ -44,9 +44,9 @@
           this.setController()
           this.setRaycaster()
           this.animate()
-          //this.loadMapData()
-          this.addFont()
-          this.addHelper()
+          this.loadMapData()
+          //this.addFont()
+          //this.addHelper()
         }
 
         // 加载地图数据
@@ -140,7 +140,7 @@
         addFont() {
           const loader = new THREE.FontLoader()
           loader.load('../json/alibaba.json', (font) => {
-            const geometry = new THREE.TextGeometry('我爱掘金', {
+            const geometry = new THREE.TextGeometry('shirui', {
               font: font,
               size: 20,
               height: 5,
