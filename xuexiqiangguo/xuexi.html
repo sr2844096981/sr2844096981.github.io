@@ -1,0 +1,105 @@
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" type="text/javascript"
+	charset="utf-8"></script>
+<style type="text/css">
+	@font-face {
+		font-family: MiSansRegular;
+		src: url('./小米MiSans字体包/MiSans-Regular.ttf'),
+	}
+
+	@font-face {
+		font-family: MiSansDemibold;
+		src: url('./小米MiSans字体包/MiSans-Demibold.ttf'),
+	}
+
+	@font-face {
+		font-family: MiSansBold;
+		src: url('./小米MiSans字体包/MiSans-Bold.ttf'),
+	}
+
+	@font-face {
+		font-family: MiSansHeavy;
+		src: url('./小米MiSans字体包/MiSans-Heavy.ttf'),
+	}
+
+
+
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	.p-r {
+		position: relative;
+		width: 1080px;
+	}
+
+	.p-a {
+		position: absolute;
+	}
+
+	.top {
+		top: 0;
+		left: 0;
+		width: 1080px;
+		height: 76px;
+		background-color: rgb(254, 71, 57);
+
+		/* opacity: .6; */
+	}
+
+	.integral {
+		top: 642px;
+		left: 94px;
+		/* font-family: MiSansHeavy; */
+		font-size: 96px;
+		background-color: #fff;
+		/* color: rgb(227, 45, 31); */
+		color: rgb(220, 39, 16);
+
+	}
+</style>
+
+<body>
+	<!-- <img src="" class="canvas" /> -->
+	<div class="p-r" id="capture">
+		<div class="p-a top"></div>
+		<img style="width: 1080px;" src="./微信图片_20230228120237.JPG">
+		<div class="p-a integral">2359</div>
+	</div>
+
+</body>
+<script language="javascript" type="text/javascript">
+	document.querySelector('.integral').textContent = prompt("输入分数", "")
+	html2canvas(document.querySelector("#capture")).then(canvas => {
+		document.body.appendChild(canvas)
+	});
+
+	/*
+
+	var num = prompt("输入分数", "");
+	if (num) {
+		document.querySelector('.integral').textContent = num;
+		updataIntegral()
+	}
+
+	function updataIntegral() {
+		var dataUrl = "";
+		var showImg = document.querySelector(".canvas");
+		html2canvas(document.querySelector("#capture")).then(canvas => {
+			document.body.appendChild(canvas)
+			// // 显示图片
+			// // 新增代码 返回图片的URL,设置为png格式。dataUrl是一个base64编码的图片URL地址
+			// dataUrl = canvas.toDataURL("image/png");
+			// showImg.setAttribute("src", dataUrl);
+
+			// // 自动下载图片
+			// var downloadUrl = dataUrl.replace("image/png", "image/octet-stream"); //图片地址
+		});
+	}
+
+	*/
+
+</script>
+
+</html>
