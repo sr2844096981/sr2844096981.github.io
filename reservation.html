@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>st</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      max-width: 100vw;
+      min-width: 320px;
+      margin: 0 auto;
+      font: normal 42px/1.5 Tahoma, "Lucida Grande", Verdana, "Microsoft Yahei", STXihei, hei;
+      color: #000;
+      background: #f2f2f2;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    li:nth-child(odd) {
+      /* background-color: #f768e3; */
+      background-color: #6ce186;
+
+    }
+
+    li:nth-child(even) {
+      background-color: #14c0fe;
+      /* background-color: #f76677; */
+
+    }
+
+    #app {
+      padding: 10px 40px;
+    }
+
+    .parseExcelFile2 {
+      font-size: 42px;
+    }
+
+
+    .list-item {
+      background-color: #fff;
+      margin: 10px auto;
+      padding: 20px;
+      border-radius: 20px;
+    }
+
+    .item-span {
+      display: inline-block;
+      margin-right: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 设置 -->
+    <div class="setup">
+      <br><br>
+      <input class="parseExcelFile2" type="date" @change="changeDate" v-model="referenceDate"><br><br>
+      <input class="parseExcelFile2" type="file" id="files" @change="parseExcelFile2(this)"><br><br>
+      <p>今天</h2>
+      <ul>
+        <li class="list-item" v-for="(item,index) in nowShowData" :key="index">
+          <i>{{index+1}}</i>
+          <span class="item-span" v-for="(v,i) in item" :key="i">{{v}}</span>
+        </li>
+      </ul>
+      <hr>
+      <p>上周</h2>
+        <hr>
+      <ul>
+        <li class="list-item" v-for="(item,index) in lastShowData" :key="index+9999999">
+          <i>{{index+1}}</i>
+          <span class="item-span" v-for="(v,i) in item" :key="i">{{v}}</span>
+        </li>
+      </ul>
+    </div>
+
+    <hr>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+  </div>
+
+  </div>
+
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <!-- <script src="./vue.js"></script> -->
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="http://manba.ch-un.com/js/manba.min.js"></script>
+  <!-- <script src="./manba.mini.js"></script> -->
+
+  <!-- use version 0.20.0 -->
+  <!-- <script lang="javascript" src="./xlsx.full.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@1.13.0/dist/exceljs.min.js"></script>
+  <script type="text/javascript">
+    //  const XLSX  = new XLSX();
+    new Vue({
+      el: "#app",
+      data: {
+        result: [],
+        nowShowData: [],
+        lastShowData: [],
+        referenceDate: "2017-10-25",
+      },
+      methods: {
+
+        parseExcelFile2(inputElement) {
+          let _this = this;
+          let files = document.getElementById('files').files || [];
+          // var files = inputElement.files || [];
+          if (!files.length) return;
+          var file = files[0];
+          console.time();
+          var reader = new FileReader();
+          reader.onloadend = function (event) {
+            var arrayBuffer = reader.result;
+            // var buffer = Buffer.from(arrayBuffer)
+            // debugger
+
+            var workbook = new ExcelJS.Workbook();
+            // workbook.xlsx.read(buffer)
+            workbook.xlsx.load(arrayBuffer).then(function (workbook) {
+              console.timeEnd();
+              var result = []
+              workbook.worksheets[0].eachRow(function (row, rowNumber) {
+                // console.log(row.values, rowNumber);
+                result.push(row.values)
+              })
+              // document.querySelector("#result2").innerHTML = result
+              // console.log(result);
+              _this.result = result
+              _this.test = result
+              _this.filterResult()
+            });
+          };
+          reader.readAsArrayBuffer(file);
+        },
+
+
+
+        // 筛选数据
+        filterResult() {
+          let _this = this;
+          let date = this.referenceDate; // 定义当前时间
+          this.nowShowData = [];//清空
+          this.lastShowData = [];//清空
+          this.result.forEach(element => {
+            if (!element[4]) return;
+
+
+            // 智能定期储蓄存款                                                                                                        
+            if (element[3].includes("智能定期储蓄存款")) {
+              if (manba(date).distance(manba(element[4]).add(5, manba.YEAR), manba.DAY) == -1) {
+                _this.nowShowData.push(element)
+              } else if (manba(date).distance(manba(element[4]).add(5, manba.YEAR), manba.DAY) == 7) {
+                _this.lastShowData.push(element)
+              }
+            } else {
+              if (manba(date).distance(manba(element[4]), manba.DAY) == -1) {
+                _this.nowShowData.push(element)
+              } else if (manba(date).distance(manba(element[4]), manba.DAY) == 7) {
+                _this.lastShowData.push(element)
+              }
+            }
+
+          });
+
+        },
+
+        changeDate(v) {
+          this.referenceDate = v.target.value;
+          this.filterResult();
+        }
+      },
+      watch: {},
+      created() {
+        this.referenceDate = manba().format("l")
+
+      },
+    })
+
+  </script>
+
+</body>
+
+</html>
